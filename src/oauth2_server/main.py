@@ -1,49 +1,41 @@
-import random
-from typing import Annotated
+from typing import Annotated, TypeVar
 
-from fastapi import FastAPI, status, HTTPException, Header
+from fastapi import FastAPI, Header, Depends
 
-import jwt
-
-from oauth2_server.models.user import ValidUser, User
-from oauth2_server.models.user_info import UserInfo
+from oauth2_server.models.user import User
+from oauth2_server.service.user_service import (
+    UserService,
+    user_service as get_user_service,
+)
+from oauth2_server.service.token_service import (
+    TokenService,
+    token_service as get_token_service,
+)
 
 app = FastAPI()
-
-USERS: dict[str, ValidUser] = {
-    u.username: u
-    for u in [ValidUser(username="timmy", password="tt", scopes=["api.scopes.v1"])]
-}
 
 secrets = "secret"
 algo = "HS256"
 
-
-@app.post("/api/v1/login")
-def login(user: User):
-    if user.username not in USERS or USERS[user.username].password != user.password:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Basic"},
-        )
-    return {"token": jwt.encode(
-        {"user": user.username, "rand_int": str(random.randint(1, 100))},
-        secrets,
-        algorithm=algo,
-    )}
+T = TypeVar("T")
 
 
 @app.post("/api/v1/authorize")
-def authorize(token: Annotated[str | None, Header()] = None):
-    token_decoded = jwt.decode(token, secrets, algorithms=[algo])
-    if token_decoded['user'] in USERS:
-        return UserInfo(
-            username=USERS[token_decoded['user']].username,
-            scopes=USERS[token_decoded['user']].scopes
-        )
-    raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Invalid or incorrect token",
-        headers={"WWW-Authenticate": "Basic"},
-    )
+async def login(user: User, user_service: UserService = Depends(get_user_service)):
+    return user_service.login(user)
+
+
+@app.post("/api/v1/token_info")
+async def token_info(
+    token: Annotated[str | None, Header()] = None,
+    token_service: TokenService = Depends(get_token_service),
+):
+    return token_service.get_token_info(token)
+
+
+@app.post("/api/v1/user_info")
+async def user_info(
+    token: Annotated[str | None, Header()] = None,
+    user_service: UserService = Depends(get_user_service),
+):
+    return user_service.get_user_info(token)
