@@ -2,8 +2,8 @@ from typing import Union, Any
 
 from fastapi import FastAPI, Depends
 
-from fastapi_example.models.user import User
-from fastapi_example.security import has_authorization
+from mainapi.src.fastapi_example.models.user import User
+from mainapi.src.fastapi_example.security import has_authorization
 
 app = FastAPI()
 

@@ -2,12 +2,12 @@ from typing import Annotated, TypeVar
 
 from fastapi import FastAPI, Header, Depends
 
-from oauth2_server.models.user import User
-from oauth2_server.service.user_service import (
+from auth_server.src.oauth2_server.models.user import User
+from auth_server.src.oauth2_server.service.user_service import (
     UserService,
     user_service as get_user_service,
 )
-from oauth2_server.service.token_service import (
+from auth_server.src.oauth2_server.service.token_service import (
     TokenService,
     token_service as get_token_service,
 )
