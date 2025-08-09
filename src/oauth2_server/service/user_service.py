@@ -34,5 +34,5 @@ class UserService:
         return self.token_service.generate_token(user.username)
 
 
-def user_service(token_service: TokenService = Depends(get_token_service)):
+def user_service(token_service:  TokenService= Depends(get_token_service)):
     return UserService(token_service)
