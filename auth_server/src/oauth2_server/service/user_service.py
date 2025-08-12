@@ -1,6 +1,6 @@
-from auth_server.src.oauth2_server.models.user import ValidUser, User
-from auth_server.src.oauth2_server.models.user_info import UserInfo
-from auth_server.src.oauth2_server.service.token_service import (
+from oauth2_server.models.user import ValidUser, User
+from oauth2_server.models.user_info import UserInfo
+from oauth2_server.service.token_service import (
     TokenService,
     token_service as get_token_service,
 )

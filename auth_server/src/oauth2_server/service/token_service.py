@@ -2,8 +2,8 @@ import time
 from fastapi import HTTPException, status
 import jwt
 
-from auth_server.src.oauth2_server.models.token import Token
-from auth_server.src.oauth2_server.models.token_info import TokenInfo
+from oauth2_server.models.token import Token
+from oauth2_server.models.token_info import TokenInfo
 
 
 class TokenService:
