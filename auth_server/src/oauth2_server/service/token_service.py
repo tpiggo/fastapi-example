@@ -42,7 +42,9 @@ class TokenService:
     def get_token_info(self, token: str):
         token_obj = self.validate_token(token)
 
-        return TokenInfo(token=token, ttl=int(token_obj.ttl - time.time()), refresh_token="")
+        return TokenInfo(
+            token=token, ttl=int(token_obj.ttl - time.time()), refresh_token=""
+        )
 
 
 def token_service() -> TokenService:

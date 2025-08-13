@@ -2,7 +2,7 @@ from typing import Annotated, TypeVar
 
 from fastapi import FastAPI, Header, Depends
 
-from oauth2_server.models.user import User
+from oauth2_server.models.user import BaseUser
 from oauth2_server.service.user_service import (
     UserService,
     user_service as get_user_service,
@@ -21,7 +21,7 @@ T = TypeVar("T")
 
 
 @app.post("/api/v1/authorize")
-async def login(user: User, user_service: UserService = Depends(get_user_service)):
+async def login(user: BaseUser, user_service: UserService = Depends(get_user_service)):
     return user_service.login(user)
 
 

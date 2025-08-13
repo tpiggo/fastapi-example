@@ -4,9 +4,9 @@ WORKDIR /usr/src/app
 
 COPY pyproject.toml ./
 COPY uv.lock ./
-RUN pip install uv
+RUN pip install uv7
 RUN uv sync
 
 COPY src .
 
-CMD [".venv/bin/uvicorn", "./oauth2_server/main.py", "--port", "8080"]
+CMD [".venv/bin/uvicorn", "oauth2_server.main:app", "--port", "8080", "--host", "0.0.0.0"]

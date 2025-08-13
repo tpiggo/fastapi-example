@@ -1,19 +1,14 @@
 from typing import Callable, Annotated, Coroutine, Any
 
-from fastapi import Depends, Header
-import requests
+from fastapi import Depends, Header, HTTPException, status
 import httpx
 
 
 class SecurityService:
-    _url = "http://localhost:8000/api/v1"
-
-    @property
-    def _client(self):
-        return httpx.AsyncClient()
+    _url = "http://localhost:8080/api/v1"
 
     @classmethod
-    def _json_throw_error(cls, res: requests.Response):
+    def _json_throw_error(cls, res: httpx.Response):
         res.raise_for_status()
         return res.json()
 
@@ -43,7 +38,9 @@ def has_authorization(scopes: list[str]) -> Callable[[str], Coroutine[Any, Any, 
                            security_service: SecurityService = Depends(_security_handler)):
         user_info = await security_service.get_user_info(token)
         if set_of_scopes.difference(user_info['scopes']):
-            raise Exception("Invalid permissions to view this resource")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="Invalid permissions to view this resource"
+            )
         return user_info
 
     return check_rights
