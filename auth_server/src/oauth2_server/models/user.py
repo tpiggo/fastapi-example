@@ -21,7 +21,7 @@ class Scope(Model, table=True):
 
 
 class UserScopeLink(Model, table=True):
-    __tablename__ = "user_scope_association"
+    __tablename__ = "users_scope_association"
     scope_id: int | None = Field(default=None, foreign_key="scope.id", primary_key=True)
     user_id: int | None = Field(default=None, foreign_key="users.id", primary_key=True)
 

@@ -6,3 +6,4 @@ class UserInfo(BaseModel):
     username: str
     scopes: list[str]
     email: str
+    name: str

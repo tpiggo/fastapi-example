@@ -30,6 +30,7 @@ class UserService:
             scopes=[scope.as_string() for scope in user.scopes],
             id=user.id,
             email=user.email,
+            name=user.name,
         )
 
     def login(self, user: BaseUser):
