@@ -14,12 +14,6 @@ from oauth2_server.service.token_service import (
 
 app = FastAPI()
 
-secrets = "secret"
-algo = "HS256"
-
-T = TypeVar("T")
-
-
 @app.post("/api/v1/authorize")
 async def login(user: BaseUser, user_service: UserService = Depends(get_user_service)):
     return user_service.login(user)

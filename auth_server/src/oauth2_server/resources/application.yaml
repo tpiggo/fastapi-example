@@ -1,0 +1,4 @@
+app_name: authorization_server
+tokens:
+  secret: "something_fun"
+  algorithm: "HS256"
