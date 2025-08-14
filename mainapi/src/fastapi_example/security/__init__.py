@@ -1,28 +1,38 @@
 from typing import Callable, Annotated, Coroutine, Any
 
 from fastapi import Depends, Header, HTTPException, status
-import httpx
+import aiohttp
 
 
 class SecurityService:
-    _url = "http://localhost:8080/api/v1"
+    _url = "http://localhost:8081/api/v1"
+
+    def __init__(self):
+        self.http_client = aiohttp.ClientSession()
 
     @classmethod
-    def _json_throw_error(cls, res: httpx.Response):
+    def _json_throw_error(cls, res: aiohttp.ClientResponse):
         res.raise_for_status()
-        return res.json()
+        return res
+
+    async def _generic_get(self, url_part: str, token: str):
+        async with aiohttp.ClientSession() as client:
+            async with client.get(f"{self._url}/{url_part}", headers={"token": token}) as resp:
+                return await self._json_throw_error(resp).json()
 
     async def token_info(self, token: str):
-        async with httpx.AsyncClient() as client:
-            return self._json_throw_error(await client.get(f"{self._url}/token_info", headers={"token": token}))
+        return await self._generic_get("token_info", token)
 
     async def get_user_info(self, token: str) -> dict[str, Any]:
-        async with httpx.AsyncClient() as client:
-            return self._json_throw_error(await client.get(f"{self._url}/user_info", headers={"token": token}))
+        return await self._generic_get("user_info", token)
+
+
+# Singleton service shared with external elements
+_service = SecurityService()
 
 
 def _security_handler() -> SecurityService:
-    return SecurityService()
+    return _service
 
 
 def has_authorization(scopes: list[str]) -> Callable[[str], Coroutine[Any, Any, dict[str, Any]]]:
