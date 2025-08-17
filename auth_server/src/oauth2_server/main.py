@@ -12,14 +12,15 @@ from oauth2_server.service.token_service import (
     token_service as get_token_service,
 )
 
-app = FastAPI()
+app = FastAPI(root_path="/api/v1")
 
-@app.post("/api/v1/authorize")
+
+@app.post("/authorize")
 async def login(user: BaseUser, user_service: UserService = Depends(get_user_service)):
     return user_service.login(user)
 
 
-@app.get("/api/v1/token_info")
+@app.get("/token_info")
 async def token_info(
     token: Annotated[str | None, Header()] = None,
     token_service: TokenService = Depends(get_token_service),
@@ -27,7 +28,7 @@ async def token_info(
     return token_service.get_token_info(token)
 
 
-@app.get("/api/v1/user_info")
+@app.get("/user_info")
 async def user_info(
     token: Annotated[str | None, Header()] = None,
     user_service: UserService = Depends(get_user_service),

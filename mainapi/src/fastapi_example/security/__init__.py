@@ -7,9 +7,6 @@ import aiohttp
 class SecurityService:
     _url = "http://localhost:8081/api/v1"
 
-    def __init__(self):
-        self.http_client = aiohttp.ClientSession()
-
     @classmethod
     def _json_throw_error(cls, res: aiohttp.ClientResponse):
         res.raise_for_status()
